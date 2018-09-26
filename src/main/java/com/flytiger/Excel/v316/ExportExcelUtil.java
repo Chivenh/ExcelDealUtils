@@ -48,7 +48,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
  * @date 2017年5月12日
  * @see POI导表工具类(使用POI[3.16])
  * @see <b>目前仅限.xls文件格式.</b>
- * @see 此类中方法基本已全部修改为对象级方法,即先有初始化,相关方法才能起效.
+ * @see 此类中方法基本已全部修改为对象级方法,即先有初始化,相关方法才能起效
  * @see --添加内容时请同时添加详细注释
  * @version 1.0.0
  * @see ***** 一般使用顺序
