@@ -1,11 +1,7 @@
 package com.flytiger.Excel;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,8 +16,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 /**
  * @author LFH
  * @version 1.0.0
- * @date 2017年6月23日
- * @see 导入EXCEL表格.转换成LIST数据输出.
+ * @since 2017年6月23日
+ *  导入EXCEL表格.转换成LIST数据输出.
  */
 public class ImportExcelByPOI {
 
@@ -30,12 +26,22 @@ public class ImportExcelByPOI {
 	private HSSFSheet sheet;
 	private Map<String, Object> emptyMap = new HashMap<>();
 
+	private Map<Integer,CellType> cellTypeMap=new HashMap<>();
+
+	public Map<Integer, CellType> getCellTypeMap() {
+		return cellTypeMap;
+	}
+
+	public void setCellTypeMap(Map<Integer, CellType> cellTypeMap) {
+		this.cellTypeMap = cellTypeMap;
+	}
+
 	/**
 	 * @author LFH
-	 * @date 2017年6月23日 下午6:30:08
-	 * @see 创建此对象的方法
+	 * @since 2017年6月23日 下午6:30:08
+	 *  创建此对象的方法
 	 * @param model 导入表的标题检查模板
-	 * @return
+	 * @return .
 	 */
 	public static ImportExcelByPOI createImportExcelByPOI(HSSFSheet sheet, String[] model) {
 		if (sheet != null && model != null && model.length > 0) {
@@ -47,14 +53,14 @@ public class ImportExcelByPOI {
 
 	/**
 	 * @author LFH
-	 * @date 2017年6月23日 下午6:30:11
-	 * @see 创建此对象的方法
+	 * @since 2017年6月23日 下午6:30:11
+	 * 创建此对象的方法
 	 * @param model 导入表的标题检查模板
 	 * @param outModel 输出LIST的键值模板(如果为空,默认和导入表的标题模板一致)
-	 * @return
+	 * @return .
 	 */
 	public static ImportExcelByPOI createImportExcelByPOI(HSSFSheet sheet, String[] model, String[] outModel) {
-		if (sheet != null && model.length > 0 && outModel.length > 0 && model.length == outModel.length) {
+		if (sheet != null && outModel.length > 0 && model.length == outModel.length) {
 			return new ImportExcelByPOI(sheet, model, outModel);
 		} else {
 			System.err.println("标题长度不一致!");
@@ -66,13 +72,13 @@ public class ImportExcelByPOI {
 	 * 判断导入的文件是否正常的.xls文件.
 	 * 
 	 * @author LFH
-	 * @date 2017年11月21日 下午7:14:55
+	 * @since 2017年11月21日 下午7:14:55
 	 * @param file
-	 * @return
+	 * @return .
 	 */
 	public static ExcelResult isXlsFile(CommonsMultipartFile file) {
 		String fileName = file.getOriginalFilename();
-		Pattern check = Pattern.compile(".*[^\\.](\\.(xls)|(XLS))$");
+		Pattern check = Pattern.compile(".*[^.](\\.(xls)|(XLS))$");
 		Matcher matcher = check.matcher(fileName);
 		boolean b = matcher.matches();// 文件类型符合
 		ExcelResult result = new ExcelResult();
@@ -80,55 +86,51 @@ public class ImportExcelByPOI {
 			if (b) {
 				InputStream checkStream = file.getInputStream();
 				if (!checkFileHead(checkStream, "xls")) {
-					result.setSTATUS(ExcelResult.ERROR);
-					result.setMSG("文档格式不符,请选择*.xls格式的文件!");
-				} else {
-					b = true;
+					result.setStatus(ExcelResult.ERROR);
+					result.setMsg("文档格式不符,请选择*.xls格式的文件!");
 				}
 			} else {
-				result.setSTATUS(ExcelResult.ERROR);
-				result.setMSG("文件类型不符br请确认导入EXCEL 97-2003 .xls格式文件!");
+				result.setStatus(ExcelResult.ERROR);
+				result.setMsg("文件类型不符br请确认导入EXCEL 97-2003 .xls格式文件!");
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
 			b = false;
-			result.setSTATUS(ExcelResult.ERROR);
-			result.setMSG("文件解析错误!");
+			result.setStatus(ExcelResult.ERROR);
+			result.setMsg("文件解析错误!");
 		}
-		result.setSUCCESS(b);
+		result.setSuccess(b);
 		return result;
 	}
 
 	/**
 	 * @author LFH
-	 * @date 2017年7月3日 下午11:54:30
-	 * @see 检查文档格式是否为.xls格式.
+	 * @since 2017年7月3日 下午11:54:30
+	 * 检查文档格式是否为.xls格式.
 	 * @param fileName 文件名字符串
-	 * @return
+	 * @return .
 	 */
 	public static boolean checkFileType(String fileName) {
-		Pattern check = Pattern.compile(".*[^\\.](\\.(xls)|(XLS))$");
+		Pattern check = Pattern.compile(".*[^.](\\.(xls)|(XLS))$");
 		Matcher matcher = check.matcher(fileName);
 		return matcher.matches();
 	}
 
 	/**
 	 * @author LFH
-	 * @date 2017年7月4日 下午2:30:38
-	 * @see 根据需要文件类型,判断文件头是否对应.
+	 * @since 2017年7月4日 下午2:30:38
+	 * 根据需要文件类型,判断文件头是否对应.
 	 * @param inputStream
 	 * @param type
-	 * @return
+	 * @return .
 	 */
 	public static boolean checkFileHead(InputStream inputStream, String type) {
 		byte[] b = new byte[10];
 		boolean bb = false;
 		try {
-			inputStream.read(b, 0, b.length);
-			String fileCode = bytesToHexString(b);
-			String xlsCode = fileType.getUseFulHex(fileType.value(type));
-			boolean bs = (fileCode.toLowerCase().startsWith(xlsCode)) || (xlsCode.toLowerCase().startsWith(fileCode));
-			bb = bs;
+			int res = inputStream.read(b, 0, b.length);
+			String fileCode = Optional.ofNullable(bytesToHexString(b)).orElse("");
+			String xlsCode = FileType.getUseFulHex(FileType.value(type));
+			bb= (fileCode.toLowerCase().startsWith(xlsCode)) || (xlsCode.toLowerCase().startsWith(fileCode));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -137,18 +139,18 @@ public class ImportExcelByPOI {
 
 	/**
 	 * @author LFH
-	 * @date 2017年7月4日 下午2:26:43
-	 * @see 文件头转为16进制可比较字符串.
+	 * @since 2017年7月4日 下午2:26:43
+	 *  文件头转为16进制可比较字符串
 	 * @param src
-	 * @return
+	 * @return .
 	 */
 	private static String bytesToHexString(byte[] src) {
 		StringBuilder stringBuilder = new StringBuilder();
 		if (src == null || src.length <= 0) {
 			return null;
 		}
-		for (int i = 0; i < src.length; i++) {
-			int v = src[i] & 0xFF;
+		for (byte b : src) {
+			int v = b & 0xFF;
 			String hv = Integer.toHexString(v);
 			if (hv.length() < 2) {
 				stringBuilder.append(0);
@@ -160,25 +162,28 @@ public class ImportExcelByPOI {
 
 	/**
 	 * @author LFH
-	 * @date 2017年6月23日 下午7:01:03
-	 * @see 检查标题行是否和模板相同.
+	 * @since 2017年6月23日 下午7:01:03
+	 * 检查标题行是否和模板相同.
 	 * @param row
 	 * @param sc
-	 * @return
+	 * @return .
 	 */
 	public boolean checkInDom(int row, int sc) {
 		HSSFRow hssfRow = this.sheet.getRow(row);
+		if(hssfRow==null){
+			return false;
+		}
 		String[] inDom = theDom(hssfRow, sc);
 		return checkInDom(inDom);
 	}
 
 	/**
 	 * @author LFH
-	 * @date 2017年6月23日 下午7:05:26
-	 * @see 返回结果LIST
+	 * @since 2017年6月23日 下午7:05:26
+	 * 返回结果LIST
 	 * @param rowS 起始行()
 	 * @param cellS 起始列
-	 * @return
+	 * @return .
 	 */
 	public List<Map<String, Object>> transferToList(int rowS, int cellS) {
 
@@ -187,7 +192,7 @@ public class ImportExcelByPOI {
 
 	/**
 	 * @author LFH
-	 * @date 2017年6月23日
+	 * @since 2017年6月23日
 	 * @param model
 	 */
 	private ImportExcelByPOI(HSSFSheet sheet, String[] model) {
@@ -206,8 +211,8 @@ public class ImportExcelByPOI {
 
 	/**
 	 * @author LFH
-	 * @date 2017年6月23日 下午11:59:19
-	 * @see 初始化空MAP,以作后续判断用.
+	 * @since 2017年6月23日 下午11:59:19
+	 * 初始化空MAP,以作后续判断用.
 	 */
 	private void initEmptyMap() {
 		for (String k : this.outModel) {
@@ -217,10 +222,10 @@ public class ImportExcelByPOI {
 
 	/**
 	 * @author LFH
-	 * @date 2017年6月23日 下午6:06:03
-	 * @see 检查标题是否对应
+	 * @since 2017年6月23日 下午6:06:03
+	 * 检查标题是否对应
 	 * @param inDom
-	 * @return
+	 * @return .
 	 */
 	private boolean checkInDom(String[] inDom) {
 		boolean check = true;
@@ -233,17 +238,17 @@ public class ImportExcelByPOI {
 
 	/**
 	 * @author LFH
-	 * @date 2017年6月23日 下午6:08:02
-	 * @see 得到导入表的标题数组
+	 * @since 2017年6月23日 下午6:08:02
+	 * 得到导入表的标题数组
 	 * @param row
 	 * @param sc
-	 * @return
+	 * @return .
 	 */
 	private String[] theDom(HSSFRow row, int sc) {
 		if (row == null || row.getLastCellNum() < model.length) {
 			return null;
 		}
-		HSSFCell cell = null;
+		HSSFCell cell ;
 		String[] titles = new String[model.length];
 		for (int i = sc; i < sc + model.length; i++) {
 			cell = row.getCell(i);
@@ -259,11 +264,11 @@ public class ImportExcelByPOI {
 
 	/**
 	 * @author LFH
-	 * @date 2017年6月23日 下午6:15:15
-	 * @see 将某行值组成MAP
+	 * @since 2017年6月23日 下午6:15:15
+	 * 将某行值组成MAP
 	 * @param rowi
 	 * @param cellS
-	 * @return
+	 * @return .
 	 */
 	private Map<String, Object> getCellMap(HSSFRow rowi, int cellS) {
 		if (rowi == null) {
@@ -272,16 +277,18 @@ public class ImportExcelByPOI {
 		if (cellS < 0 || cellS > rowi.getLastCellNum()) {
 			return null;
 		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		HSSFCell cell = null;
-		Object value = null;
+		Map<String, Object> map = new HashMap<>();
+		HSSFCell cell ;
+		Object value ;
 		FormulaEvaluator evaluator = this.sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
 		for (int i = cellS; i < cellS + this.outModel.length; i++) {
 			cell = rowi.getCell(i);
 			if (cell == null) {
 				value = null;
 			} else {
-				CellType cellType = cell.getCellTypeEnum();
+				//处理某些列的数据本意为String,但是因为内容是纯数字,就被当成NUMBERIC格式,导致无法满足需求
+				CellType cellType = Optional.ofNullable(this.getCellTypeMap().get(i)).orElse( cell.getCellTypeEnum());
+				cell.setCellType(cellType);
 				if (evaluator != null && cellType == CellType.FORMULA) {
 					evaluator.evaluateInCell(cell);
 					cellType = cell.getCellTypeEnum();
@@ -311,46 +318,42 @@ public class ImportExcelByPOI {
 
 	/**
 	 * @author LFH
-	 * @date 2017年6月23日 下午6:14:55
-	 * @see 将表格中值组成LIST
-	 * @param sheet
+	 * @since 2017年6月23日 下午6:14:55
+	 * 将表格中值组成LIST
 	 * @param rowS 起始行
 	 * @param cellS 起始列
-	 * @return
+	 * @return .
 	 */
 	private List<Map<String, Object>> transfer_List(int rowS, int cellS) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> map = null;
-		HSSFRow row = null;
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> map ;
+		HSSFRow row ;
 		int rowE = this.sheet.getLastRowNum();
-		;
-		if (this.sheet == null || rowS < 0 || rowE < 0) {
+		if (rowS < 0 || rowE < 0) {
 			return null;
 		}
 		for (int i = rowS; i <= rowE; i++) {
-			map = new HashMap<String, Object>();
 			row = this.sheet.getRow(i);
 			map = getCellMap(row, cellS);
 			if (map != null && !map.isEmpty()) {
 				list.add(map);
 			}
 		}
-		// T_Util.consoleOut("测试List\n "+list.size());
 		return list;
 	}
 
 	/**
 	 * @author LFH
-	 * @date 2017年7月4日
+	 * @since 2017年7月4日
 	 *       文件类型枚举类
 	 */
-	private enum fileType {
+	private enum FileType {
 		XLS("2003EXCEL", "d0cf11e0a1b11ae10000");
 
 		private String typeName;
 		private String typeHex;
 
-		private fileType(String typeName, String typeHex) {
+		 FileType(String typeName, String typeHex) {
 			this.typeName = typeName;
 			this.typeHex = typeHex;
 		}
@@ -366,70 +369,70 @@ public class ImportExcelByPOI {
 
 		/**
 		 * @author LFH
-		 * @date 2017年7月4日 下午2:41:44
-		 * @see 根据枚举获取对应HEX码.
+		 * @since 2017年7月4日 下午2:41:44
+		 * 根据枚举获取对应HEX码.
 		 * @param type
-		 * @return
+		 * @return .
 		 */
-		public static String getUseFulHex(fileType type) {
+		public static String getUseFulHex(FileType type) {
 			return type.getTypeHex();
 		}
 
 		/**
 		 * @author LFH
-		 * @date 2017年7月4日 下午2:59:55
-		 * @see 将字符串转成fileType的类举.
+		 * @since 2017年7月4日 下午2:59:55
+		 * 将字符串转成fileType的类举.
 		 * @param type
-		 * @return
+		 * @return .
 		 */
-		public static fileType value(String type) {
-			return fileType.valueOf(type.toUpperCase());
+		public static FileType value(String type) {
+			return FileType.valueOf(type.toUpperCase());
 		}
 	}
 
 	public static class ExcelResult {
-		private String STATUS = "status";
-		private String MSG = "msg";
-		private boolean SUCCESS = false;
+		private String status = "status";
+		private String msg = "msg";
+		private boolean success = false;
 		private static final String ERROR = "error", FAIL = "fail", EMPTY = "empty";
 
-		public String getSTATUS() {
-			return STATUS;
+		public String getStatus() {
+			return status;
 		}
 
-		public String getMSG() {
-			return MSG;
+		public String getMsg() {
+			return msg;
 		}
 
-		public boolean isSUCCESS() {
-			return SUCCESS;
+		public boolean isSuccess() {
+			return success;
 		}
 
-		private void setSTATUS(String sTATUS) {
-			STATUS = sTATUS;
+		private void setStatus(String status) {
+			this.status = status;
 		}
 
-		private void setMSG(String mSG) {
-			MSG = mSG;
+		private void setMsg(String msg) {
+			this.msg = msg;
 		}
 
-		private void setSUCCESS(boolean sUCCESS) {
-			SUCCESS = sUCCESS;
+		private void setSuccess(boolean success) {
+			this.success = success;
 		}
 
 		@Override
 		public String toString() {
-			return "ExcelResult [STATUS=" + STATUS + ", MSG=" + MSG + ", SUCCESS=" + SUCCESS + "]";
+			return "ExcelResult [status=" + status + ", msg=" + msg + ", success=" + success + "]";
 		}
 
-		private ExcelResult(String sTATUS, String mSG, boolean sUCCESS) {
-			STATUS = sTATUS;
-			MSG = mSG;
-			SUCCESS = sUCCESS;
+		private ExcelResult(String status, String msg, boolean success) {
+			this.status = status;
+			this.msg = msg;
+			this.success = success;
 		}
 
 		private ExcelResult() {
-			// TODO Auto-generated constructor stub
+
 		}
 
 	}
