@@ -1,14 +1,5 @@
 package com.flytiger.Excel.v315;
 
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.ClientAnchor.AnchorType;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.*;
-
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -20,12 +11,24 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.ClientAnchor.AnchorType;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.*;
+
 /**
+ *  @since 2019/3/3 16:21
+ *  废弃;请转向:{@link ExportExcelPlus}
  * @author LFH
- * @date 2017年5月12日
+ * @since  2017年5月12日
  * @see POI导表工具类(使用POI[3.15])
  * @see <b>.xlsx文件格式.</b>
- * @see 此类中方法基本已全部修改为对象级方法,即先有初始化,相关方法才能起效.
+ * @see 此类中方法基本已全部修改为对象级方法,即先有初始化,相关方法才能起效
  * @see --添加内容时请同时添加详细注释
  * @version 1.0.0
  * @see ***** 一般使用顺序
@@ -35,12 +38,13 @@ import java.util.*;
  * @see --填充值
  * @see #outFile(HttpServletResponse, String)
  * @see --最后导出文件
- * @see******详细参数请看对应方法注释
+ * @see ******详细参数请看对应方法注释
 			 
 																																	 
 			
- * @see******其它对象方法请参看公共方法列表
+ * @see ******其它对象方法请参看公共方法列表
  *************/
+@Deprecated
  public class ExportExcelXUtil {
 	/************************************************************************************************/
 	private XSSFSheet tSheet;// 当前操作sheet
@@ -166,7 +170,7 @@ import java.util.*;
 	/**
 	 * @author LFH
 	 * @date 2017年5月12日 下午5:34:47
-	 * @see 主要用于当表格复杂时,使用此方法获取sheet进行填充.
+	 * @see 主要用于当表格复杂时,使用此方法获取sheet进行填充
 	 * @return
 	 */
 	public XSSFSheet gettSheet() {

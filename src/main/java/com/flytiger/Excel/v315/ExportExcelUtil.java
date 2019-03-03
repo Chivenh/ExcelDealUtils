@@ -9,39 +9,25 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFPatriarch;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor.AnchorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
+ * @since 2019/3/3 16:21
+ * 废弃;请转向:{@link ExportExcelPlus}
  * @author LFH
  * @date 2017年5月12日
  * @see POI导表工具类(使用POI[3.15])
- * @see <b>目前仅限.xls文件格式.</b>
+ * @see <b>.xls文件格式.</b>
  * @see 此类中方法基本已全部修改为对象级方法,即先有初始化,相关方法才能起效.
  * @see --添加内容时请同时添加详细注释
  * @version 1.0.0
@@ -58,6 +44,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 			
  * @see******其它对象方法请参看公共方法列表
  *************/
+@Deprecated
  public class ExportExcelUtil {
 	/************************************************************************************************/
 	private HSSFSheet tSheet;// 当前操作sheet
@@ -125,6 +112,20 @@ import org.apache.poi.ss.util.CellRangeAddress;
 			System.err.println(e);
 		}
 		return exp;
+	}
+	
+	/**
+	 * 设置文档unwriteProtectWorkbook,让文档取消只读.
+	 * 
+	 * @author LFH
+	 * @date 2018年5月8日 下午4:48:20
+	 * @return
+	 */
+	public ExportExcelUtil setSheetWriteable() {
+		if (this.tWorkbook != null) {
+			this.tWorkbook.unwriteProtectWorkbook();
+		}
+		return this;
 	}
 
 	/**
