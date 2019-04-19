@@ -61,6 +61,7 @@ public class ExportExcelPlus {
 	private Workbook theWorkbook;
 	private CellStyle theCellStyle;
 	private ConstructorDefine constructorDefine;
+	private String suffix;
 
 	private String rootPath;
 
@@ -79,6 +80,7 @@ public class ExportExcelPlus {
 		this.theWorkbook = tWorkbook;
 		this.rootPath = rootPath;
 		this.theCellStyle = this.theWorkbook.createCellStyle();
+		this.suffix = isXls?".xls":".xlsx";
 		try {
 			final Class INT=int.class;
 			if(isXls){
@@ -1172,7 +1174,7 @@ public class ExportExcelPlus {
 			response.reset();
 			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
 			// 靠这一行向外导出文件,("文件名以双引号包住,是为了避免在火狐等浏览器导出文件时文件名中有空格出现问题的情况 !")
-			response.setHeader("Content-disposition", "attachment; filename=\"" + fname + ".xlsx" + "\"");
+			response.setHeader("Content-disposition", "attachment; filename=\"" + fname + this.suffix + "\"");
 			wb.write(out);
 		} catch (IOException e) {
 			throw e;
