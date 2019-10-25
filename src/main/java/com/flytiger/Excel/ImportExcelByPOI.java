@@ -90,7 +90,7 @@ public class ImportExcelByPOI {
 				result.setMSG("文件类型不符br请确认导入EXCEL 97-2003 .xls格式文件!");
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 			b = false;
 			result.setSTATUS(ExcelResult.ERROR);
 			result.setMSG("文件解析错误!");
@@ -335,7 +335,7 @@ public class ImportExcelByPOI {
 				list.add(map);
 			}
 		}
-		// T_Util.consoleOut("测试List\n "+list.size());
+		
 		return list;
 	}
 
@@ -429,7 +429,7 @@ public class ImportExcelByPOI {
 		}
 
 		private ExcelResult() {
-			// TODO Auto-generated constructor stub
+			
 		}
 
 	}
